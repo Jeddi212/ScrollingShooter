@@ -90,7 +90,7 @@ function love.update(dt)
             table.remove(bullets, i)
         end
     end
-    
+
     -- Time out enemy creation
     createEnemyTimer = createEnemyTimer - (1 * dt)
     if createEnemyTimer < 0 then
@@ -134,15 +134,15 @@ function love.update(dt)
         -- remove all our bullets and enemies from screen
         bullets = {}
         enemies = {}
-    
+
         -- reset timers
         canShootTimer = canShootTimerMax
         createEnemyTimer = createEnemyTimerMax
-    
+
         -- move player back to default position
         player.x = 185
         player.y = 610
-    
+
         -- reset our game state
         score = 0
         isAlive = true
@@ -152,16 +152,22 @@ end
 player = { x = 185, y = 610, speed = 150, img = nil }
 
 function love.draw(dt)
+    -- Score
+    love.graphics.print("Score : ".. score, 5, 5)
+
+    -- Player
     if isAlive then
         love.graphics.draw(player.img, player.x, player.y)
     else
         love.graphics.print("Press 'R' to restart", love.graphics:getWidth()/2-50, love.graphics:getHeight()/2-10)
     end
-    
+
+    -- Bullet
     for i, bullet in ipairs(bullets) do
         love.graphics.draw(bullet.img, bullet.x, bullet.y)
     end
 
+    -- Enemies
     for i, enemy in ipairs(enemies) do
         love.graphics.draw(enemy.img, enemy.x, enemy.y)
     end
