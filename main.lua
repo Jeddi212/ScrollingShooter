@@ -5,10 +5,20 @@ canShootTimerMax = 0.2
 canShootTimer = canShootTimerMax
 
 -- Image Storage
-bulletImg = love.graphics.newImage('assets/bullet.png')
+bulletImg = nil
 
 -- Entity Storage
 bullets = {} -- array of current bullets being drawn and updated
+
+--More timers
+createEnemyTimerMax = 0.4
+createEnemyTimer = createEnemyTimerMax
+  
+-- More images
+enemyImg = nil -- Like other images we'll pull this in during out love.load function
+  
+-- More storage
+enemies = {} -- array of current enemies on screen
 
 debug = true -- Set false for realease
 
@@ -18,6 +28,8 @@ debug = true -- Set false for realease
 ]]--
 function love.load(arg)
     player.img = love.graphics.newImage('assets/plane.png')
+    bulletImg = love.graphics.newImage('assets/bullet.png')
+    enemyImg = love.graphics.newImage('assets/enemy.png')
     --we now have an asset ready to be used inside Love
 end
 
@@ -64,6 +76,26 @@ function love.update(dt)
             table.remove(bullets, i)
         end
     end
+    
+    -- Time out enemy creation
+    createEnemyTimer = createEnemyTimer - (1 * dt)
+    if createEnemyTimer < 0 then
+        createEnemyTimer = createEnemyTimerMax
+
+        -- Create an enemy
+        randomNumber = math.random(10, love.graphics.getWidth() - 10)
+        newEnemy = { x = randomNumber, y = -10, img = enemyImg }
+        table.insert(enemies, newEnemy)
+    end
+
+    -- update the positions of enemies
+    for i, enemy in ipairs(enemies) do
+        enemy.y = enemy.y + (200 * dt)
+
+        if enemy.y > 850 then -- remove enemies when they pass off the screen
+            table.remove(enemies, i)
+        end
+    end
 end
 
 player = { x = 185, y = 610, speed = 150, img = nil }
@@ -73,5 +105,9 @@ function love.draw(dt)
     
     for i, bullet in ipairs(bullets) do
         love.graphics.draw(bullet.img, bullet.x, bullet.y)
+    end
+
+    for i, enemy in ipairs(enemies) do
+        love.graphics.draw(enemy.img, enemy.x, enemy.y)
     end
 end
