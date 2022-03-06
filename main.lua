@@ -1,3 +1,15 @@
+-- Timers
+-- We declare these here so we don't have to edit them multiple places
+canShoot = true
+canShootTimerMax = 0.2 
+canShootTimer = canShootTimerMax
+
+-- Image Storage
+bulletImg = love.graphics.newImage('assets/bullet.png')
+
+-- Entity Storage
+bullets = {} -- array of current bullets being drawn and updated
+
 debug = true -- Set false for realease
 
 --[[
@@ -29,10 +41,37 @@ function love.update(dt)
             player.x = player.x + (player.speed*dt)
         end
     end
+
+    -- Time out how far apart our shots can be.
+    canShootTimer = canShootTimer - (1 * dt)
+    if canShootTimer < 0 then
+        canShoot = true
+    end
+
+    if love.keyboard.isDown('space', 'rctrl', 'lctrl') and canShoot then
+        -- Create some bullets
+        newBullet = { x = player.x + (player.img:getWidth()/2), y = player.y, img = bulletImg }
+        table.insert(bullets, newBullet)
+        canShoot = false
+        canShootTimer = canShootTimerMax
+    end
+
+    -- update the positions of bullets
+    for i, bullet in ipairs(bullets) do
+        bullet.y = bullet.y - (250 * dt)
+
+        if bullet.y < 0 then -- remove bullets when they pass off the screen
+            table.remove(bullets, i)
+        end
+    end
 end
 
 player = { x = 185, y = 610, speed = 150, img = nil }
 
 function love.draw(dt)
     love.graphics.draw(player.img, player.x, player.y)
+    
+    for i, bullet in ipairs(bullets) do
+        love.graphics.draw(bullet.img, bullet.x, bullet.y)
+    end
 end
