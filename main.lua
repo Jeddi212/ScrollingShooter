@@ -62,6 +62,7 @@ function love.update(dt)
         love.event.push('quit')
     end
 
+    -- Player Movement
     if love.keyboard.isDown('left', 'a') then
         if player.x > 0 then -- binds us to the map
             player.x = player.x - (player.speed*dt)
@@ -70,6 +71,16 @@ function love.update(dt)
         -- [ : ] is syntactic sugar for object oriented for 'self' keyword
         if player.x < (love.graphics.getWidth() - player.img:getWidth()) then
             player.x = player.x + (player.speed*dt)
+        end
+    end
+
+    if love.keyboard.isDown('up', 'w') then
+        if player.y > 0 then -- membatasi map di atas
+            player.y = player.y - (player.speed*dt)
+        end
+    elseif love.keyboard.isDown('down', 's') then
+        if player.y < (love.graphics.getHeight() - player.img:getHeight()) then
+            player.y = player.y + (player.speed*dt)
         end
     end
 
