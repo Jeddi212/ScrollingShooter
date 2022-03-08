@@ -1,27 +1,27 @@
 -- Timers
 -- We declare these here so we don't have to edit them multiple places
-canShoot = true
-canShootTimerMax = 0.2 
-canShootTimer = canShootTimerMax
+local canShoot = true
+local canShootTimerMax = 0.2 
+local canShootTimer = canShootTimerMax
 
 -- Image Storage
-bulletImg = nil
+local bulletImg = nil
 
 -- Entity Storage
-bullets = {} -- array of current bullets being drawn and updated
+local bullets = {} -- array of current bullets being drawn and updated
 
 --More timers
-createEnemyTimerMax = 0.4
-createEnemyTimer = createEnemyTimerMax
+local createEnemyTimerMax = 0.4
+local createEnemyTimer = createEnemyTimerMax
   
 -- More images
-enemyImg = nil -- Like other images we'll pull this in during out love.load function
+local enemyImg = nil -- Like other images we'll pull this in during out love.load function
   
 -- More storage
-enemies = {} -- array of current enemies on screen
+local enemies = {} -- array of current enemies on screen
 
 -- Audio Storage
-gunSound = nil
+local gunSound = nil
 
 debug = false -- Set false for realease
 
@@ -36,15 +36,15 @@ function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
            y2 < y1+h1
 end
 
-isAlive = true
-score = 0
+local isAlive = true
+local score = 0
 
 --[[
     love.load is called when the game first starts. 
     We'll load our assets -- images, sounds, etc -- here
 ]]--
 function love.load(arg)
-    player.img = love.graphics.newImage('assets/plane.png')
+    Player.img = love.graphics.newImage('assets/plane.png')
     bulletImg = love.graphics.newImage('assets/bullet.png')
     enemyImg = love.graphics.newImage('assets/enemy.png')
     gunSound = love.audio.newSource("assets/gun-sound.wav", "static")
@@ -64,23 +64,23 @@ function love.update(dt)
 
     -- Player Movement
     if love.keyboard.isDown('left', 'a') then
-        if player.x > 0 then -- binds us to the map
-            player.x = player.x - (player.speed*dt)
+        if Player.x > 0 then -- binds us to the map
+            Player.x = Player.x - (Player.speed*dt)
         end
     elseif love.keyboard.isDown('right', 'd') then
         -- [ : ] is syntactic sugar for object oriented for 'self' keyword
-        if player.x < (love.graphics.getWidth() - player.img:getWidth()) then
-            player.x = player.x + (player.speed*dt)
+        if Player.x < (love.graphics.getWidth() - Player.img:getWidth()) then
+            Player.x = Player.x + (Player.speed*dt)
         end
     end
 
     if love.keyboard.isDown('up', 'w') then
-        if player.y > 0 then -- membatasi map di atas
-            player.y = player.y - (player.speed*dt)
+        if Player.y > 0 then -- membatasi map di atas
+            Player.y = Player.y - (Player.speed*dt)
         end
     elseif love.keyboard.isDown('down', 's') then
-        if player.y < (love.graphics.getHeight() - player.img:getHeight()) then
-            player.y = player.y + (player.speed*dt)
+        if Player.y < (love.graphics.getHeight() - Player.img:getHeight()) then
+            Player.y = Player.y + (Player.speed*dt)
         end
     end
 
@@ -92,7 +92,7 @@ function love.update(dt)
 
     if love.keyboard.isDown('space', 'rctrl', 'lctrl') and canShoot then
         -- Create some bullets
-        newBullet = { x = player.x + (player.img:getWidth()/2), y = player.y, img = bulletImg }
+        newBullet = { x = Player.x + (Player.img:getWidth()/2), y = Player.y, img = bulletImg }
         table.insert(bullets, newBullet)
 
         --NEW LINE
@@ -119,7 +119,7 @@ function love.update(dt)
 
         -- Create an enemy
         randomNumber = math.random(10, love.graphics.getWidth() - 10)
-        newEnemy = { x = randomNumber, y = -10, img = enemyImg }
+        local newEnemy = { x = randomNumber, y = -10, img = enemyImg }
         table.insert(enemies, newEnemy)
     end
 
@@ -134,7 +134,7 @@ function love.update(dt)
 
     -- run our collision detection
     -- Since there will be fewer enemies on screen than bullets we'll loop them first
-    -- Also, we need to see if the enemies hit our player
+    -- Also, we need to see if the enemies hit our Player
     for i, enemy in ipairs(enemies) do
         for j, bullet in ipairs(bullets) do
             if CheckCollision(enemy.x, enemy.y, enemy.img:getWidth(), enemy.img:getHeight(), bullet.x, bullet.y, bullet.img:getWidth(), bullet.img:getHeight()) then
@@ -144,7 +144,7 @@ function love.update(dt)
             end
         end
 
-        if CheckCollision(enemy.x, enemy.y, enemy.img:getWidth(), enemy.img:getHeight(), player.x, player.y, player.img:getWidth(), player.img:getHeight()) 
+        if CheckCollision(enemy.x, enemy.y, enemy.img:getWidth(), enemy.img:getHeight(), Player.x, Player.y, Player.img:getWidth(), Player.img:getHeight()) 
         and isAlive then
             table.remove(enemies, i)
             isAlive = false
@@ -160,9 +160,9 @@ function love.update(dt)
         canShootTimer = canShootTimerMax
         createEnemyTimer = createEnemyTimerMax
 
-        -- move player back to default position
-        player.x = 185
-        player.y = 610
+        -- move Player back to default position
+        Player.x = 185
+        Player.y = 610
 
         -- reset our game state
         score = 0
@@ -170,7 +170,7 @@ function love.update(dt)
     end
 end
 
-player = { x = 185, y = 610, speed = 150, img = nil }
+Player = { x = 185, y = 610, speed = 150, img = nil }
 
 function love.draw(dt)
     -- Score
@@ -178,7 +178,7 @@ function love.draw(dt)
 
     -- Player
     if isAlive then
-        love.graphics.draw(player.img, player.x, player.y)
+        love.graphics.draw(Player.img, Player.x, Player.y)
     else
         love.graphics.print("Press 'R' to restart", love.graphics:getWidth()/2-50, love.graphics:getHeight()/2-10)
     end
