@@ -20,6 +20,9 @@ enemyImg = nil -- Like other images we'll pull this in during out love.load func
 -- More storage
 enemies = {} -- array of current enemies on screen
 
+-- Audio Storage
+gunSound = nil
+
 debug = false -- Set false for realease
 
 -- Collision detection taken function from http://love2d.org/wiki/BoundingBox.lua
@@ -44,6 +47,8 @@ function love.load(arg)
     player.img = love.graphics.newImage('assets/plane.png')
     bulletImg = love.graphics.newImage('assets/bullet.png')
     enemyImg = love.graphics.newImage('assets/enemy.png')
+    gunSound = love.audio.newSource("assets/gun-sound.wav", "static")
+    gunSound:setVolume(0.1)
     --we now have an asset ready to be used inside Love
 end
 
@@ -78,6 +83,11 @@ function love.update(dt)
         -- Create some bullets
         newBullet = { x = player.x + (player.img:getWidth()/2), y = player.y, img = bulletImg }
         table.insert(bullets, newBullet)
+
+        --NEW LINE
+        gunSound:play()
+        --END NEW
+
         canShoot = false
         canShootTimer = canShootTimerMax
     end
